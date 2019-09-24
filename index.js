@@ -5,16 +5,19 @@ const store = {
     { id: cuid(), name: 'milk', checked: true },
     { id: cuid(), name: 'bread', checked: false }
   ],
-  hideCheckedItems: false,
-  itemNewName: ''
+  hideCheckedItems: false
 };
 
 const generateItemElement = function (item) {
-  let itemTitle = `<input class='shopping-item shopping-item-change shopping-item__checked' placeholder="${item.name}"></input>`;
+  let itemTitle = `
+      <form class="name-changer">
+      <input class='shopping-item shopping-item__checked' id='name-changer' placeholder='${item.name}'></input>
+      </form>`;
   if (!item.checked) {
     itemTitle = `
-     <input class='shopping-item shopping-item-change' placeholder="${item.name}"></input>
-    `;
+    <form class="name-changer">
+    <input class='shopping-item' id='name-changer' placeholder='${item.name}'></input>
+    </form>`;
   }
 
   return `
@@ -90,27 +93,29 @@ const handleItemCheckClicked = function () {
   });
 };
 
+const toggleNameChange = function (id,newName) {
+  const foundItem = store.items.findIndex(item => item.id === id);
+  store.items[foundItem].name = newName; 
+};
+
+const handleNameChange = function () {
+  $('.name-changer').on('submit', event => {
+    event.preventDefault();
+    const id = getItemIdFromElement(event.currentTarget);
+    const newName = getElementbyId(event.currentTarget).value;
+    toggleNameChange(id,newName);
+    render();
+    console.log(newName)
+    console.log(id)
+  });
+  console.log('name change running 2')
+};
+
 const getItemIdFromElement = function (item) {
   return $(item)
     .closest('.js-item-element')
     .data('item-id');
 };
-
-const toggleChangeName = function (id) { // function that changes property of input place holder and name
-  STORE.itemNewName = document.getElementsById(".shopping-item-change").value;
-  const foundItem = store.items.find(item => item.id === id);
-  foundItem.name = foundItem.itemNewName;
-  console.log('toggleChangeName');
-};
-
-const handleNameChange = function() { // function that listens for the user to change to name and change the store and run render function
-  $('.js-shopping-list').on('submit','.shopping-item-change', e => {
-    const id = getItemIdFromElement(e.currentTarget);
-    toggleChangeName(id);
-    render();
-    console.log('toggleChangeName');
-  })
-}
 
 /**
  * Responsible for deleting a list item.
@@ -175,6 +180,7 @@ const handleShoppingList = function () {
   render();
   handleNewItemSubmit();
   handleItemCheckClicked();
+  handleNameChange();
   handleDeleteItemClicked();
   handleToggleFilterClick();
 };
