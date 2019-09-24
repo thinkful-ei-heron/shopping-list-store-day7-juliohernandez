@@ -5,14 +5,15 @@ const store = {
     { id: cuid(), name: 'milk', checked: true },
     { id: cuid(), name: 'bread', checked: false }
   ],
-  hideCheckedItems: false
+  hideCheckedItems: false,
+  itemNewName: ''
 };
 
 const generateItemElement = function (item) {
-  let itemTitle = `<span class='shopping-item shopping-item__checked'>${item.name}</span>`;
+  let itemTitle = `<input class='shopping-item shopping-item-change shopping-item__checked' placeholder="${item.name}"></input>`;
   if (!item.checked) {
     itemTitle = `
-     <span class='shopping-item'>${item.name}</span>
+     <input class='shopping-item shopping-item-change' placeholder="${item.name}"></input>
     `;
   }
 
@@ -94,6 +95,22 @@ const getItemIdFromElement = function (item) {
     .closest('.js-item-element')
     .data('item-id');
 };
+
+const toggleChangeName = function (id) { // function that changes property of input place holder and name
+  STORE.itemNewName = document.getElementsById(".shopping-item-change").value;
+  const foundItem = store.items.find(item => item.id === id);
+  foundItem.name = foundItem.itemNewName;
+  console.log('toggleChangeName');
+};
+
+const handleNameChange = function() { // function that listens for the user to change to name and change the store and run render function
+  $('.js-shopping-list').on('submit','.shopping-item-change', e => {
+    const id = getItemIdFromElement(e.currentTarget);
+    toggleChangeName(id);
+    render();
+    console.log('toggleChangeName');
+  })
+}
 
 /**
  * Responsible for deleting a list item.
