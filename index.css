@@ -52,3 +52,6 @@ button:hover {
   text-decoration: line-through;
 }
 
+#name-changer {
+  border: none;
+}

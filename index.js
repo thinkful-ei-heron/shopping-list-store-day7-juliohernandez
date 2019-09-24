@@ -11,12 +11,12 @@ const store = {
 const generateItemElement = function (item) {
   let itemTitle = `
       <form class="name-changer">
-      <input class='shopping-item shopping-item__checked' id='name-changer' placeholder='${item.name}'></input>
+      <input class='shopping-item shopping-item__checked' id='name-changer' value='${item.name}'></input>
       </form>`;
   if (!item.checked) {
     itemTitle = `
     <form class="name-changer">
-    <input class='shopping-item' id='name-changer' placeholder='${item.name}'></input>
+    <input class='shopping-item' id='name-changer' value='${item.name}'></input>
     </form>`;
   }
 
@@ -95,20 +95,20 @@ const handleItemCheckClicked = function () {
 
 const toggleNameChange = function (id,newName) {
   const foundItem = store.items.findIndex(item => item.id === id);
-  store.items[foundItem].name = newName; 
+  store.items[foundItem].name = newName;
+  console.log(foundItem); 
 };
 
 const handleNameChange = function () {
   $('.name-changer').on('submit', event => {
+    console.log(($(event.currentTarget).children().val()))
     event.preventDefault();
     const id = getItemIdFromElement(event.currentTarget);
-    const newName = getElementbyId(event.currentTarget).value;
+    const newName = ($(event.currentTarget).children().val());
     toggleNameChange(id,newName);
     render();
     console.log(newName)
-    console.log(id)
   });
-  console.log('name change running 2')
 };
 
 const getItemIdFromElement = function (item) {
